@@ -134,7 +134,7 @@ def edit():
 def uploadhours():
     dt = date.fromisoformat(request.form['date'])
     activities = load_activities(dt)
-    logs = send_to_jira(activities, load_variable("jira_url"), load_variable("email"), load_variable("api_token"))
+    logs = send_to_jira(activities, load_variable("jira_url"), load_variable("email"), load_variable("api_token"), log_date=dt)
     if logs == []:
         logs.append("Nothing to log...")
 
