@@ -12,6 +12,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
         issue_key  = activity.get("id")
         hours      = activity.get("hours")
         comment    = activity.get("description")
+        htmlurlkey = f"<a href='{jira_url}/browse/{issue_key}' target='_blank'>{issue_key}</a>:"
 
         if not issue_key or hours is None or not comment:
             logs.append(f"❌ Skipping incomplete activity: {activity!r}")
@@ -22,7 +23,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
             issue = jira.issue(issue_key)
         except Exception as e:
             msg = getattr(e, 'text', None)
-            logs.append(f"❌ Could not fetch issue {issue_key}: {msg}")
+            logs.append(f"❌ Could not fetch issue {htmlurlkey}: {msg}")
             continue
         
         # Fetch existing worklogs for that issue
@@ -30,7 +31,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
             existing = jira.worklogs(issue_key)
         except Exception as e:
             msg = getattr(e, 'text', None)
-            logs.append(f"❌ Could not load worklogs for {issue_key}: {msg}")
+            logs.append(f"❌ Could not load worklogs for {htmlurlkey}: {msg}")
             existing = []
         
         # Check for a duplicate (same hours & comment by you)
@@ -52,7 +53,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
             wl_auth = getattr(wl.author, "emailAddress", None)
 
             if wl_sec == target_seconds and wl_comm == comment and wl_auth == email:
-                logs.append(f"⚠️ Already logged {hours}h to {issue_key} with comment: “{comment}”")
+                logs.append(f"⚠️ Already logged {hours}h to {htmlurlkey} with comment: “{comment}”")
                 dup = True
                 break
         if dup:
@@ -76,8 +77,8 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
                 comment=comment,
                 started=started_dt
             )
-            logs.append(f"✅ Logged {hours}h to {issue_key}: “{comment}”")
+            logs.append(f"✅ Logged {hours}h to {htmlurlkey}: “{comment}”")
         except Exception as e:
-            logs.append(f"❌ Failed to log work on {issue_key}: {e}")
+            logs.append(f"❌ Failed to log work on {htmlurlkey}: {e}")
 
     return logs

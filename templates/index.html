@@ -228,7 +228,7 @@
             <div class="modal-body">
                 <ul class="list-group">
                     {% for entry in logs %}
-                    <li class="list-group-item">{{ entry }}</li>
+                    <li class="list-group-item">{{ entry|safe }}</li>
                     {% endfor %}
                 </ul>
             </div>
