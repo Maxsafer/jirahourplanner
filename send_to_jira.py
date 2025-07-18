@@ -1,8 +1,10 @@
 from jira import JIRA
 
 def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: str):
-    jira = JIRA(server=jira_url, basic_auth=(email, api_token))
     logs = []
+    if not jira_url or not email or not api_token:
+        return ["Environment variable missing..."]
+    jira = JIRA(server=jira_url, basic_auth=(email, api_token))
 
     for activity in activities:
         issue_key  = activity.get("id")

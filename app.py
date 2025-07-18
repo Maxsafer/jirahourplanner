@@ -30,7 +30,7 @@ def write_url(url):
     fname = 'user.env'
     path = os.path.join(DATA_DIR, fname)
     with open(path, 'w') as f:
-        f.write(f"jira_url={clean}\nemail=YOUR_EMAIL\napi_token=YOUR_TOKEN")
+        f.write(f"jira_url={clean}\nemail=\napi_token=")
 
 def load_variable(key):
     """
@@ -135,6 +135,8 @@ def uploadhours():
     dt = date.fromisoformat(request.form['date'])
     activities = load_activities(dt)
     logs = send_to_jira(activities, load_variable("jira_url"), load_variable("email"), load_variable("api_token"))
+    if logs == []:
+        logs.append("Nothing to log...")
 
     today     = date.today()
     monday    = today - timedelta(days=today.weekday())
