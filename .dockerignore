@@ -1,0 +1,10 @@
+# don’t include your activity JSON files
+data/
+
+# don’t include your JIRA creds
+data/user.env
+
+# ignore Python cache, env files, etc.
+__pycache__/
+*.pyc
+.env
