@@ -25,12 +25,12 @@ def save_activities(dt: date, activities):
     with open(path, 'w') as f:
         json.dump(activities, f, indent=2)
 
-def write_url(url):
+def write_env(url, email, token):
     clean = url.strip().rstrip('/')
     fname = 'user.env'
     path = os.path.join(DATA_DIR, fname)
     with open(path, 'w') as f:
-        f.write(f"jira_url={clean}\nemail=\napi_token=")
+        f.write(f"jira_url={clean}\nemail={email}\napi_token={token}")
 
 def load_variable(key):
     """
@@ -76,10 +76,12 @@ def index():
     week      = week_dates(monday)
     week_data = {d: load_activities(d) for d in week}
     jira_url  = load_variable("jira_url") or "https://your-jira-instance.atlassian.net"
+    email  = load_variable("email")  or "yourmail@email.com"
 
     return render_template(
         'index.html',
         jira_url=jira_url,
+        email=email,
         week=week,
         week_data=week_data,
         prev_start=prev_monday.isoformat(),
@@ -94,7 +96,8 @@ def add():
     activities.append({
         'id': request.form['act_id'],
         'description': request.form['desc'],
-        'hours': float(request.form['hours'])
+        'hours': float(request.form['hours']),
+        'url': f"{load_variable("jira_url")}/browse/{request.form['act_id']}"
     })
     save_activities(dt, activities)
     return redirect(request.referrer or url_for('index'))
@@ -149,7 +152,9 @@ def uploadhours():
 @app.route('/save_url', methods=['POST'])
 def save_url():
     url = request.form['jiraUrl']
-    write_url(url)
+    email = request.form['email']
+    token = request.form['jiraToken']
+    write_env(url, email, token)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

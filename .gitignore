@@ -50,6 +50,9 @@ instance/
 data/
 data/user.env
 
+# Scripts
+dockerbuild.sh
+
 # Docker
 *.env
 docker-compose*.yml

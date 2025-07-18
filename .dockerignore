@@ -8,3 +8,6 @@ data/user.env
 __pycache__/
 *.pyc
 .env
+
+# ignore build script
+dockerbuild.sh
