@@ -12,7 +12,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
         issue_key  = activity.get("id")
         hours      = activity.get("hours")
         comment    = activity.get("description")
-        htmlurlkey = f"<a href='{jira_url}/browse/{issue_key}' target='_blank'>{issue_key}</a>:"
+        htmlurlkey = f"<a href='{jira_url}/browse/{issue_key}' target='_blank'>{issue_key}</a>"
 
         if not issue_key or hours is None or not comment:
             logs.append(f"❌ Skipping incomplete activity: {activity!r}")
