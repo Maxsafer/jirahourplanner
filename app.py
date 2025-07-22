@@ -131,7 +131,6 @@ def edit():
         activities[idx]["hours"] = hours
         save_activities(dt, activities)
     return redirect(request.referrer or url_for('index'))
-    return redirect(request.referrer or url_for('index'))
 
 @app.route('/uploadhours', methods=['POST'])
 def uploadhours():
@@ -146,7 +145,6 @@ def uploadhours():
     next_monday  = monday + timedelta(days=7)
     iso_year, iso_week, _ = monday.isocalendar()
     iso_week_str = f"{iso_year}-W{iso_week:02d}"
-
     week      = week_dates(monday)
     week_data = {d: load_activities(d) for d in week}
     jira_url  = load_variable("jira_url") or "https://your-jira-instance.atlassian.net"
