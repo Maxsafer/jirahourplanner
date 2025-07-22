@@ -254,7 +254,7 @@
         .getElementById('logModal')
         .addEventListener('hidden.bs.modal', () => {
             // once the user closes the modal, go home
-            window.location.href = "{{ url_for('index') }}";
+            window.location.href = window.location.pathname + window.location.search;
         });
 </script>
 {% endif %}
