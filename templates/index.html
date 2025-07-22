@@ -250,12 +250,23 @@
     });
 </script>
 <script>
+    (() => {
+    const desiredUrl = "{{ url_for('index') }}?start={{ start }}";
+
+    // replace the current history entry
+    history.replaceState(null, '', desiredUrl);
+
+    // reload or redirect to /?start=…
+    var logModal = new bootstrap.Modal(document.getElementById('logModal'));
+    logModal.show();
+
     document
         .getElementById('logModal')
         .addEventListener('hidden.bs.modal', () => {
-            // once the user closes the modal, go home
-            window.location.href = window.location.pathname + window.location.search;
+            // once the user closes the modal, stay on that week
+	    window.location.href = desiredUrl;
         });
+    })();
 </script>
 {% endif %}
 
@@ -303,15 +314,6 @@
                 textarea.style.height = textarea.scrollHeight + 'px';
             });
         });
-    });
-</script>
-
-<!-- listen for the hide event and blur anything that still has focus -->
-<script>
-    const editModal = document.getElementById('editModal');
-    editModal.addEventListener('hide.bs.modal', () => {
-        const focused = editModal.querySelector(':focus');
-        if (focused) focused.blur();
     });
 </script>
 {% endblock %}

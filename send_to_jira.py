@@ -61,7 +61,7 @@ def send_to_jira(activities: list[dict], jira_url: str, email: str, api_token: s
 
         # No duplicate, log it
         try:
-            timeSpentFormatted=f"{str(hours).split(".")[0]}h {6*int(str(hours).split(".")[1])}m"
+            timeSpentFormatted=f"{str(hours).split('.')[0]}h {6*int(str(hours).split('.')[1])}m"
             tz = datetime.now().astimezone().tzinfo
             started_dt = datetime(
                 log_date.year,

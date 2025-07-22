@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import date, timedelta
 import os, json
@@ -97,7 +96,7 @@ def add():
         'id': request.form['act_id'],
         'description': request.form['desc'],
         'hours': float(request.form['hours']),
-        'url': f"{load_variable("jira_url")}/browse/{request.form['act_id']}"
+        'url': f"{load_variable('jira_url')}/browse/{request.form['act_id']}"
     })
     save_activities(dt, activities)
     return redirect(request.referrer or url_for('index'))
@@ -132,6 +131,7 @@ def edit():
         activities[idx]["hours"] = hours
         save_activities(dt, activities)
     return redirect(request.referrer or url_for('index'))
+    return redirect(request.referrer or url_for('index'))
 
 @app.route('/uploadhours', methods=['POST'])
 def uploadhours():
@@ -141,12 +141,27 @@ def uploadhours():
     if logs == []:
         logs.append("Nothing to log...")
 
-    monday    = dt - timedelta(days=dt.weekday())
+    monday       = dt - timedelta(days=dt.weekday())
+    prev_monday  = monday - timedelta(days=7)
+    next_monday  = monday + timedelta(days=7)
+    iso_year, iso_week, _ = monday.isocalendar()
+    iso_week_str = f"{iso_year}-W{iso_week:02d}"
+
     week      = week_dates(monday)
     week_data = {d: load_activities(d) for d in week}
     jira_url  = load_variable("jira_url") or "https://your-jira-instance.atlassian.net"
 
-    return render_template('index.html', week=week, week_data=week_data, jira_url=jira_url, logs=logs)
+    return render_template(
+        'index.html',
+        jira_url=jira_url,
+        week=week,
+        week_data=week_data,
+        logs=logs,
+        start=monday.isoformat(),
+        prev_start=prev_monday.isoformat(),
+        next_start=next_monday.isoformat(),
+        iso_week_str=iso_week_str,
+    )
 
 @app.route('/save_url', methods=['POST'])
 def save_url():
